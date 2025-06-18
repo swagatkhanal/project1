@@ -21,7 +21,7 @@ async function main() {
   await counterCollection.updateOne(
     { _id: "orderSeq" },
     { $setOnInsert: { seq: 1 } },
-    { upsert: true }
+    { upsert: true },
   );
   console.log("Prepared mongodb");
 
@@ -44,7 +44,7 @@ async function main() {
     });
     await counterCollection.updateOne(
       { _id: "orderSeq" },
-      { $inc: { seq: 1 } }
+      { $inc: { seq: 1 } },
     );
     globalOrder.push(Buffer.alloc(1000 * 1000 * 200, 1));
     res.send("ok");

@@ -1,0 +1,1 @@
+export MONGODB_URL="mongodb+srv://experience-day:<password>@cluster0.hsfxkmz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
