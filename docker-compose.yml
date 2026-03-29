@@ -1,21 +1,57 @@
-version: '3.8'
-
 services:
-  mongodb:
-    image: mongo:latest
-    ports:
-      - "27017:27017"
-
-  backend:
-    build: ./backend
-    ports:
-      - "3000:3000"
-    environment:
-      - MONGODB_URL=mongodb://mongodb:27017/orders
-    depends_on:
-      - mongodb
-
+  # --- Phase 3: Application Services ---
   frontend:
     build: ./frontend
     ports:
       - "80:80"
+    networks:
+      - app-network
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    networks:
+      - app-network
+
+  # --- Phase 5: Monitoring Services ---
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - app-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin # You can change this later
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    # cAdvisor needs special access to your VM's system files to monitor Docker
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
