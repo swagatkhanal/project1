@@ -46,7 +46,7 @@ async function main() {
       { _id: "orderSeq" },
       { $inc: { seq: 1 } },
     );
-    globalOrder.push(Buffer.alloc(1000 * 1000 * 200, 1));
+
     res.send("ok");
   });
 
